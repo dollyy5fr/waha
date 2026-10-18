@@ -1,0 +1,31 @@
+
+name: Auto Sync From Sidharth
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: core
+          fetch-depth: 0
+
+      - name: Fetch latest changes
+        run: |
+          git remote add source https://github.com/dollyy5fr/waha.git
+          git fetch source core
+
+      - name: Sync and push
+        run: |
+          git checkout core
+          git merge --ff-only source/core
+          git push origin core
